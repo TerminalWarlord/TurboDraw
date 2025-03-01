@@ -4,7 +4,11 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "start": "bun index.ts"
+    "start": "bun index.ts",
+    "dev": "bun index.ts"
+  },
+  "dependencies": {
+    "db": "*"
   },
   "devDependencies": {
     "@types/bun": "latest"

@@ -1,84 +1,95 @@
-# Turborepo starter
+# TurboDraw
 
-This Turborepo starter is maintained by the Turborepo core team.
+TurboDraw is a high-performance, real-time collaborative drawing app built with **Turborepo**. Inspired by Excalidraw, it provides a smooth and interactive drawing experience using **Next.js** for the frontend, **Bun** for the backend, and **Prisma** for database management.
 
-## Using this example
+## 🚀 Getting Started
 
-Run the following command:
+### Prerequisites
+- **Bun** (latest version)
+- **PostgreSQL** (or any database supported by Prisma)
+
+### Installation
+Clone the repository:
 
 ```sh
-npx create-turbo@latest
+ git clone https://github.com/your-username/TurboDraw.git
+ cd TurboDraw
+ bun install
 ```
 
-## What's inside?
+### Running the Development Environment
 
-This Turborepo includes the following packages/apps:
+Start the websocket:
+```sh
+cd apps/ws
+bun dev
+```
+Start the backend:
+```sh
+cd apps/backend
+bun dev
+```
 
-### Apps and Packages
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+Start the frontend:
+```sh
+cd apps/web
+bun dev
+```
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+### Database Setup
+```sh
+cd packages/db
+bun prisma migrate dev
+```
 
-### Utilities
+## 📁 Project Structure
 
-This Turborepo has some additional tools already setup for you:
+```
+TurboDraw/
+├── apps/
+│   ├── web/          # Next.js frontend
+│   ├── ws/           # Bun-based WebSocket backend
+│   ├── backend/      # Bun-based Express backend 
+│
+├── packages/
+│   ├── db/      # Prisma database setup
+│   ├── typescript-config/ # Shared TypeScript config
+│
+├── turbo.json   # Turborepo configuration
+```
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+## 🛠️ Tech Stack
+- **Frontend:** Next.js, React, Tailwind CSS
+- **Backend:** Bun, WebSockets, Express, JWT, Bcrypt, ZOD
+- **Database:** PostgreSQL, Prisma
+- **Monorepo:** Turborepo
 
+## ✨ Features
+✅ Hand-drawn style sketches 🎨  
+✅ Real-time collaboration 🔄  
+✅ Multi-device support 📱💻  
+✅ WebSockets-powered backend ⚡  
+✅ Prisma for scalable database management 📊  
+
+## 🚀 Deployment
 ### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
+To build all apps and packages:
+```sh
+bun build
 ```
 
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm dev
+### Remote Caching with Vercel
+To enable Turborepo remote caching:
+```sh
+bun turbo login
+bun turbo link
 ```
 
-### Remote Caching
+## 📜 License
+[MIT License](LICENSE)
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+---
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+Made with ❤️ by TurboDraw contributors.
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
