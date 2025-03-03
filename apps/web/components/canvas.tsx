@@ -1,7 +1,7 @@
 "use client";
 
 import { DrawCanvas } from "@/lib/canvas-helper";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { tools } from "types/types";
 import Tools from "./tools";
 
@@ -9,13 +9,39 @@ import Tools from "./tools";
 const Canvas = ({ roomId }: { roomId: number }) => {
     const [socket, setSocket] = useState<WebSocket | null>(null);
     const [currentCanvas, setCurrentCanvas] = useState<DrawCanvas | null>(null);
+    const [scale, setScale] = useState(1);
     const [selectedTool, setSelectedTool] = useState<tools>(tools.Rect);
     const [windowSize, setWindowSize] = useState<{ height: number, width: number }>({ width: window.innerWidth, height: window.innerHeight });
+
+    console.log(scale);
+
+    useEffect(() => {
+        const handleZoom = (event: WheelEvent) => {
+            if (!event.ctrlKey && !event.metaKey) {
+                return;
+            }
+            event.preventDefault();
+            console.log("resizing");
+
+            const scaleFactor = 0.1;
+
+            if (event.deltaY < 0) {
+                setScale(prevScale => Math.min(prevScale + scaleFactor, 2));
+            } else {
+                setScale(prevScale => Math.max(0.1, prevScale - scaleFactor));
+            }
+        };
+        window.addEventListener("wheel", handleZoom, { passive: false });
+
+        return () => {
+            window.removeEventListener("wheel", handleZoom);
+        }
+    }, [])
 
 
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    useEffect(() => {
+    useLayoutEffect(() => {
         const handleResize = () => {
             setWindowSize({ width: window.innerWidth, height: window.innerHeight });
         };
@@ -39,7 +65,7 @@ const Canvas = ({ roomId }: { roomId: number }) => {
         }
 
         return () => ws.close();
-    }, []);
+    }, [roomId]);
 
 
     useEffect(() => {
@@ -49,12 +75,32 @@ const Canvas = ({ roomId }: { roomId: number }) => {
         if (!socket) {
             return;
         }
+        const ctx = canvasRef.current.getContext("2d");
+
+        if (!ctx) {
+            return;
+        }
+
+        const scaledWidth = windowSize.width / scale;
+        const scaledHeight = windowSize.height / scale;
+
+        // Reset transformation before applying new scale
+        ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transformations
+        ctx.clearRect(0, 0, scaledWidth, scaledHeight); // Clear the canvas
+        ctx.setTransform(scale, 0, 0, scale, 0, 0); // Apply new scale
+
         // drawCanvas(canvasRef.current, socket, roomId);
         const drawCanvas = new DrawCanvas(canvasRef.current, socket, roomId);
         setCurrentCanvas(drawCanvas);
 
 
-    }, [socket, roomId]);
+
+        return () => {
+            drawCanvas.destroy();
+        }
+
+
+    }, [socket, roomId, scale, windowSize]);
 
     function changeTool(tool: tools) {
         console.log(tool);
