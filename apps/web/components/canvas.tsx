@@ -1,15 +1,29 @@
 "use client";
 
-import { DrawCanvas} from "@/lib/canvas-helper";
+import { DrawCanvas } from "@/lib/canvas-helper";
 import { useEffect, useRef, useState } from "react";
+import { tools } from "types/types";
+import Tools from "./tools";
 
 
 const Canvas = ({ roomId }: { roomId: number }) => {
     const [socket, setSocket] = useState<WebSocket | null>(null);
+    const [currentCanvas, setCurrentCanvas] = useState<DrawCanvas | null>(null);
+    const [selectedTool, setSelectedTool] = useState<tools>(tools.Rect);
+    const [windowSize, setWindowSize] = useState<{ height: number, width: number }>({ width: window.innerWidth, height: window.innerHeight });
 
 
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+        };
+
+        window.addEventListener("resize", handleResize);
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, [])
 
 
     useEffect(() => {
@@ -23,7 +37,9 @@ const Canvas = ({ roomId }: { roomId: number }) => {
                 type: "join",
             }));
         }
-    }, [])
+
+        return () => ws.close();
+    }, []);
 
 
     useEffect(() => {
@@ -35,14 +51,24 @@ const Canvas = ({ roomId }: { roomId: number }) => {
         }
         // drawCanvas(canvasRef.current, socket, roomId);
         const drawCanvas = new DrawCanvas(canvasRef.current, socket, roomId);
+        setCurrentCanvas(drawCanvas);
 
 
-    }, [socket]);
+    }, [socket, roomId]);
+
+    function changeTool(tool: tools) {
+        console.log(tool);
+        setSelectedTool(tool);
+        currentCanvas?.updateSelectedTool(tool);
+    }
 
     return (
-        <canvas width={1080} height={1080} className=" bg-amber-50" ref={canvasRef}>
+        <div className="relative flex justify-center">
+            <canvas width={windowSize.width} height={windowSize.height} className=" bg-amber-50" ref={canvasRef}>
+            </canvas>
 
-        </canvas>
+            <Tools changeTool={changeTool} selectedTool={selectedTool} />
+        </div>
     )
 }
 

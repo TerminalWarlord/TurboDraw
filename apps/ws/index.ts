@@ -43,7 +43,7 @@ Bun.serve({
 
             }
             else if (parsedData.type === "shape") {
-                console.log("adding")
+                // console.log("adding", parsedData)
                 const { roomId } = parsedData;
                 const user = users.find(u => u.roomId === parseInt(roomId));
                 if (!user) {
