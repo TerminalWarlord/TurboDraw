@@ -1,6 +1,6 @@
 "use client";
 
-import { drawCanvas } from "@/lib/canvas-helper";
+import { DrawCanvas} from "@/lib/canvas-helper";
 import { useEffect, useRef, useState } from "react";
 
 
@@ -33,7 +33,8 @@ const Canvas = ({ roomId }: { roomId: number }) => {
         if (!socket) {
             return;
         }
-        drawCanvas(canvasRef.current, socket, roomId);
+        // drawCanvas(canvasRef.current, socket, roomId);
+        const drawCanvas = new DrawCanvas(canvasRef.current, socket, roomId);
 
 
     }, [socket]);
