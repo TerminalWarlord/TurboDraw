@@ -1,5 +1,6 @@
-import { tools } from "types/types";
+import { Rectangle, tools } from "types/types";
 import { DrawCanvas } from "../canvas-helper";
+import { dragItem } from "../drag-item";
 
 
 export const mouseMoveHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
@@ -26,7 +27,6 @@ export const mouseMoveHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
             ctx.stroke();
         }
         else if (selectedTool === tools.Line) {
-            const radius = Math.abs(Math.max(width, height) / 2);
             ctx.beginPath();
             ctx.moveTo(startX, startY);
             ctx.lineTo(startX + width, startY + height);
@@ -37,6 +37,31 @@ export const mouseMoveHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
             ctx.stroke();
             const newPencilPaths = [...instance.getPencilPaths(), { x: ev.clientX, y: ev.clientY }];
             instance.setPencilPaths(newPencilPaths);
+        }
+        else if (selectedTool === tools.Selection) {
+            const ctx = instance.getCtx();
+            const selectedElement = instance.getSelectedElement();
+            if (!selectedElement) {
+                console.log("nothing selected");
+                return;
+            }
+            console.log("moving");
+
+            const newShapes = instance.getExistingShapes().filter(shape => shape !== selectedElement);
+            // if (selectedElement.shape === tools.Rect) {
+            //     const rect = selectedElement as Rectangle;
+            //     rect.x=ev.clientX;
+            //     rect.y=ev.clientY;
+            // newShapes.push(rect);
+            // instance.clearCanvas();
+            // }
+            const updatedShape = dragItem(instance)(ev, selectedElement);
+            if (updatedShape) {
+                newShapes.push(updatedShape);
+                instance.clearCanvas();
+            }
+
+
         }
 
 

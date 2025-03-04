@@ -50,7 +50,8 @@ export enum tools {
     Pencil = "pencil",
     Line = "line",
     Text = "text",
-    Image = "image"
+    Image = "image",
+    Selection = "selection"
 }
 
 export type SelectedTool = tools;

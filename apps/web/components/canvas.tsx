@@ -17,13 +17,14 @@ const Canvas = ({ roomId }: { roomId: number }) => {
 
     useEffect(() => {
         const handleZoom = (event: WheelEvent) => {
+            console.log(event);
             if (!event.ctrlKey && !event.metaKey) {
                 return;
             }
             event.preventDefault();
             console.log("resizing");
 
-            const scaleFactor = 0.1;
+            const scaleFactor = 0.001;
 
             if (event.deltaY < 0) {
                 setScale(prevScale => Math.min(prevScale + scaleFactor, 2));
@@ -81,8 +82,8 @@ const Canvas = ({ roomId }: { roomId: number }) => {
             return;
         }
 
-        const scaledWidth = windowSize.width / scale;
-        const scaledHeight = windowSize.height / scale;
+        const scaledWidth = windowSize.width * scale;
+        const scaledHeight = windowSize.height * scale;
 
         // Reset transformation before applying new scale
         ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transformations
@@ -100,7 +101,27 @@ const Canvas = ({ roomId }: { roomId: number }) => {
         }
 
 
-    }, [socket, roomId, scale, windowSize]);
+    }, [socket, roomId]);
+
+
+    useLayoutEffect(() => {
+        if (!canvasRef.current) {
+            return;
+        }
+        const ctx = canvasRef.current.getContext("2d");
+
+        if (!ctx) {
+            return;
+        }
+
+        const scaledWidth = windowSize.width / scale;
+        const scaledHeight = windowSize.height / scale;
+
+        // Reset transformation before applying new scale
+        ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transformations
+        // ctx.clearRect(0, 0, scaledWidth, scaledHeight); // Clear the canvas
+        ctx.setTransform(scale, 0, 0, scale, 0, 0); // Apply new scale
+    }, [scale, windowSize])
 
     function changeTool(tool: tools) {
         console.log(tool);

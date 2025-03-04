@@ -16,7 +16,10 @@ export class DrawCanvas {
     private startX = 0;
     private startY = 0;
     private ctx!: CanvasRenderingContext2D;
+    private offsetX: number = 0;
+    private offsetY: number = 0;
     private pencilPaths: { x: number, y: number }[] = [];
+    private selectedElement!: Shape;
     constructor(canvas: HTMLCanvasElement, socket: WebSocket, roomId: number) {
         this.canvas = canvas;
         this.socket = socket;
@@ -63,6 +66,22 @@ export class DrawCanvas {
     getExistingShapes() {
         return this.existingShapes;
     }
+    getOffsets() {
+        return {
+            offsetX: this.offsetX,
+            offsetY: this.offsetY
+        }
+    }
+
+    getSelectedElement() {
+        return this.selectedElement;
+    }
+    setOffsetX(offset: number) {
+        this.offsetX = offset;
+    }
+    setOffsetY(offset: number) {
+        this.offsetY = offset;
+    }
     setStartX(x: number) {
         this.startX = x;
     }
@@ -78,6 +97,9 @@ export class DrawCanvas {
     }
     setPencilPaths(paths: { x: number, y: number }[]) {
         this.pencilPaths = paths;
+    }
+    setSelectedElement(shape: Shape) {
+        this.selectedElement = shape;
     }
 
     updateSelectedTool = (tool: tools) => {
