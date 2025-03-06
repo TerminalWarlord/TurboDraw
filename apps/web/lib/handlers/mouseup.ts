@@ -89,4 +89,6 @@ export const mouseUpHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
         shape: shapeType
     }))
     instance.clearCanvas();
+    instance.setSelectedElement(null);
+
 };

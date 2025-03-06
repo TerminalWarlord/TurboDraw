@@ -1,4 +1,4 @@
-import { Circle, Line, Rectangle, Shape, tools } from "types/types";
+import { Circle, Line, Pencil, Rectangle, Shape, tools } from "types/types";
 import { DrawCanvas } from "./canvas-helper";
 
 
@@ -14,8 +14,8 @@ const isRect = (instance: DrawCanvas) => (shape: Shape, x: number, y: number): S
 
     if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
         console.log("matched")
-        rect.initialX = x-rect.x;
-        rect.initialY = y-rect.y;
+        rect.initialX = x - rect.x;
+        rect.initialY = y - rect.y;
         instance.setSelectedElement(rect);
         console.log(rect);
         return rect;
@@ -31,11 +31,11 @@ const isCircle = (instance: DrawCanvas) => (shape: Shape, x: number, y: number):
     const centerY = circle.centerY;
     const radius = circle.radius;
     const distanceFromCenter = distance(centerX, x, centerY, y);
-    console.log("sniffing circle", distanceFromCenter, radius);
-
+    
     if (distanceFromCenter <= radius) {
-        circle.initialX = x-circle.centerX;
-        circle.initialY = y-circle.centerY;
+        console.log("sniffing circle", distanceFromCenter, radius);
+        circle.initialX = x - circle.centerX;
+        circle.initialY = y - circle.centerY;
         instance.setSelectedElement(circle);
         return circle;
     }
@@ -52,6 +52,9 @@ const isLine = (instance: DrawCanvas) => (shape: Shape, x: number, y: number): S
     const distanceOfAC = distance(line.startX, x, line.startY, y);
     const distanceOfBC = distance(line.endX, x, line.endY, y);
     if (Math.abs(distanceOfAB - distanceOfAC - distanceOfBC) < 1) {
+        shape.initialX = x - line.startX;
+        shape.initialY = y - line.startY;
+        console.log(shape);
         instance.setSelectedElement(shape);
         return line;
     }
@@ -60,6 +63,31 @@ const isLine = (instance: DrawCanvas) => (shape: Shape, x: number, y: number): S
 }
 
 
+const isPencil = (instance: DrawCanvas) => (shape: Shape, x: number, y: number): Shape | null => {
+    const pencilPaths = shape as Pencil;
+    const minX = Math.min(...pencilPaths.path.map(p => p.x));
+    const maxX = Math.max(...pencilPaths.path.map(p => p.x));
+    const minY = Math.min(...pencilPaths.path.map(p => p.y));
+    const maxY = Math.max(...pencilPaths.path.map(p => p.y));
+    // pencilPaths.path.forEach(p => {
+    //     if (Math.abs(p.x - x) < 2 && Math.abs(p.y - y)) {
+    // shape.initialX = x;
+    // shape.initialY = y;
+    // instance.setSelectedElement(shape);
+    // return shape;
+    //     }
+    // })
+    if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
+        shape.initialX = x;
+        shape.initialY = y;
+        instance.setSelectedElement(shape);
+        return shape;
+    }
+
+    return null;
+
+}
+
 
 export const getSelectedElement = (instance: DrawCanvas) => (x: number, y: number): Shape | null => {
     const existingShapes = instance.getExistingShapes();
@@ -67,22 +95,19 @@ export const getSelectedElement = (instance: DrawCanvas) => (x: number, y: numbe
 
         if (shape.shape === tools.Rect) {
             const rect = isRect(instance)(shape, x, y);
-            if (rect) {
-                return rect;
-            }
+            return rect;
         }
         else if (shape.shape === tools.Circle) {
             const circle = isCircle(instance)(shape, x, y);
-            if (circle) {
-                return circle;
-            }
+            return circle;
         }
         else if (shape.shape === tools.Line) {
             const line = isLine(instance)(shape, x, y);
-            if (line) {
-                return line;
-            }
-
+            return line;
+        }
+        else if (shape.shape === tools.Pencil) {
+            const pencilPath = isPencil(instance)(shape, x, y);
+            return pencilPath;
         }
 
     })

@@ -107,7 +107,7 @@ export class DrawCanvas {
     setPencilPaths(paths: { x: number, y: number }[]) {
         this.pencilPaths = paths;
     }
-    setSelectedElement(shape: Shape) {
+    setSelectedElement(shape: Shape|null) {
         this.selectedElement = shape;
     }
     setTimer(timer: NodeJS.Timeout) {
@@ -129,8 +129,9 @@ export class DrawCanvas {
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.existingShapes.map((shape: Shape) => {
             // console.log(typeof shape);
+            ctx.strokeStyle = "rgb(255, 255, 255)";
             if (shape.shape === tools.Rect) {
-                ctx.strokeStyle = "rgb(255, 255, 255)";
+                // ctx.strokeStyle = "rgb(255, 255, 255)";
                 const rect = shape as Rectangle;
                 // console.log("writing rect",shape);
                 // console.log(rect.x, rect.y, rect.width, rect.height);
@@ -182,16 +183,21 @@ export class DrawCanvas {
                 this.existingShapes = newListOfShapes;
                 this.clearCanvas();
             }
-            else if (parsedData.shape === 'rect') {
-                this.existingShapes.push(parsedData);
-                this.clearCanvas();
-            }
-            else if (parsedData.shape === 'circle') {
-                console.log("received circle", this.existingShapes.length);
+            else if (parsedData.shape) {
                 this.existingShapes.push(parsedData);
                 console.log(this.existingShapes.length);
                 this.clearCanvas();
             }
+            // else if (parsedData.shape === 'rect') {
+            //     this.existingShapes.push(parsedData);
+            //     this.clearCanvas();
+            // }
+            // else if (parsedData.shape === 'circle') {
+            //     console.log("received circle", this.existingShapes.length);
+            //     this.existingShapes.push(parsedData);
+            //     console.log(this.existingShapes.length);
+            //     this.clearCanvas();
+            // }
 
         }
     }

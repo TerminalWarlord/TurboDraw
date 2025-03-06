@@ -1,4 +1,4 @@
-import { Circle, Line, Rectangle, Shape, tools } from "types/types";
+import { Circle, Line, Pencil, Rectangle, Shape, tools } from "types/types";
 import { DrawCanvas } from "./canvas-helper";
 import { updateShapeCoordinates } from "./socket";
 import { v4 as uuidv4 } from "uuid";
@@ -65,15 +65,64 @@ export const dragItem = (instance: DrawCanvas) => (ev: MouseEvent, selectedEleme
     else if (selectedElement.shape === tools.Line) {
         const line = selectedElement as Line;
 
-        const deltaX = ev.clientX - line.startX;
-        const deltaY = ev.clientY - line.startY;
+        const deltaX = ev.clientX - (line.initialX || 0);
+        const deltaY = ev.clientY - (line.initialY || 0);
+        const width = Math.abs(line.endX - line.startX);
+        const height = Math.abs(line.endY - line.startY);
+
+        line.startX = deltaX;
+        line.startY = deltaY;
+        line.endX = line.startX + width;
+        line.endY = line.startY + height;
 
 
-        line.startX = ev.clientX;
-        line.startY = ev.clientY;
-        line.endX += deltaX;
-        line.endY += deltaY;
+        updateShapeCoordinates(socket,
+            line.id,
+            roomId,
+            JSON.stringify({
+                roomId,
+                id: newId,
+                type: "shape",
+                shape: line.shape,
+                startX: line.startX,
+                startY: line.startY,
+                endX: line.endX,
+                endY: line.endY
+            }),
+            timer,
+            setTimerFn
+        );
+        instance.clearCanvas();
         return line;
+    }
+
+    else if (selectedElement.shape === tools.Pencil) {
+        const pencilPaths = selectedElement as Pencil;
+        const deltaX = ev.clientX - (pencilPaths.initialX || 0);
+        const deltaY = ev.clientY - (pencilPaths.initialY || 0);
+
+        pencilPaths.path.forEach(p => {
+            console.log(p);
+            p.x += deltaX;
+            p.y += deltaY;
+        });
+        updateShapeCoordinates(socket,
+            pencilPaths.id,
+            roomId,
+            JSON.stringify({
+                roomId,
+                id: newId,
+                type: "shape",
+                shape: pencilPaths.shape,
+                path: pencilPaths.path
+            }),
+            timer,
+            setTimerFn
+        );
+        pencilPaths.initialX=ev.clientX;
+        pencilPaths.initialY=ev.clientY;
+        instance.clearCanvas();
+        return pencilPaths;
     }
     return selectedElement;
 } 

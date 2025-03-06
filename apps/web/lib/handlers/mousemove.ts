@@ -3,6 +3,8 @@ import { DrawCanvas } from "../canvas-helper";
 import { dragItem } from "../drag-item";
 import { getSelectedElement } from "../get-selected-element";
 import { resize } from "../resize";
+import { eraseItem } from "../erase";
+import { eraseShape } from "../socket";
 
 
 export const mouseMoveHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
@@ -11,6 +13,8 @@ export const mouseMoveHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
     const startY = instance.getStartY();
     const selectedTool = instance.getSelectedTool();
     const ctx = instance.getCtx();
+    const socket = instance.getSocket();
+    const roomId = instance.getRoomId();
 
     if (clicked) {
         const width = ev.clientX - startX;
@@ -73,6 +77,7 @@ export const mouseMoveHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
                 return;
             }
             console.log("removing");
+            eraseShape(socket, selectedElement.id, roomId);
             const newShapes = instance.getExistingShapes().filter(shape => shape !== selectedElement);
             instance.setExisitingShapes(newShapes)
             instance.clearCanvas();

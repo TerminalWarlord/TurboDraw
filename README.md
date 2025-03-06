@@ -12,36 +12,28 @@ TurboDraw is a high-performance, real-time collaborative drawing app built with 
 Clone the repository:
 
 ```sh
- git clone https://github.com/your-username/TurboDraw.git
+ git clone https://github.com/TerminalWarlord/TurboDraw.git
  cd TurboDraw
  bun install
 ```
 
 ### Running the Development Environment
 
-Start the websocket:
-```sh
-cd apps/ws
-bun dev
-```
-Start the backend:
-```sh
-cd apps/backend
-bun dev
-```
 
-
-Start the frontend:
-```sh
-cd apps/web
-bun dev
-```
 
 ### Database Setup
+Create `.env` and add `DATABASE_URL` into `packages/db`
 ```sh
 cd packages/db
 bun prisma migrate dev
 ```
+
+Install the dependencies and run the frontend, backend and ws altogether:
+```sh
+bun install
+bun dev
+```
+
 
 ## 📁 Project Structure
 
