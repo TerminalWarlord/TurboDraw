@@ -14,9 +14,11 @@ const isRect = (instance: DrawCanvas) => (shape: Shape, x: number, y: number): S
 
     if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
         console.log("matched")
-        instance.setSelectedElement(shape);
-        console.log(shape);
-        return shape;
+        rect.initialX = x-rect.x;
+        rect.initialY = y-rect.y;
+        instance.setSelectedElement(rect);
+        console.log(rect);
+        return rect;
     }
 
     return null;
@@ -32,7 +34,9 @@ const isCircle = (instance: DrawCanvas) => (shape: Shape, x: number, y: number):
     console.log("sniffing circle", distanceFromCenter, radius);
 
     if (distanceFromCenter <= radius) {
-        instance.setSelectedElement(shape);
+        circle.initialX = x-circle.centerX;
+        circle.initialY = y-circle.centerY;
+        instance.setSelectedElement(circle);
         return circle;
     }
 

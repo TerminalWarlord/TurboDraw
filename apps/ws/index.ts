@@ -1,5 +1,6 @@
 import { type ServerWebSocket } from "bun";
 import { prismaClient } from "db/db";
+import { tools } from "types/types";
 
 interface Users {
     roomId: number,
@@ -42,9 +43,33 @@ Bun.serve({
                 });
 
             }
+            else if (parsedData.type === "erase") {
+                const { id, roomId } = parsedData;
+                console.log("Erasing", id, roomId);
+                try {
+                    
+                    
+                    const user = users.find(u => u.roomId === parseInt(roomId));
+                    if (!user) return;
+                    
+                    user.socket.forEach(soc => {
+                        soc.send(JSON.stringify({ type: "erase", id }));
+                    });
+
+
+                    // TODO: add queue (SQS)
+                    const deletedItem = await prismaClient.message.delete({
+                        where: { id }
+                    });
+
+                    console.log("Deleted", deletedItem);
+                } catch (error) {
+                    console.log("Failed to erase", id);
+                }
+            }
             else if (parsedData.type === "shape") {
                 // console.log("adding", parsedData)
-                const { roomId } = parsedData;
+                const { id, roomId } = parsedData;
                 const user = users.find(u => u.roomId === parseInt(roomId));
                 if (!user) {
                     return;
@@ -55,10 +80,12 @@ Bun.serve({
 
                 await prismaClient.message.create({
                     data: {
+                        id,
                         content: JSON.stringify(parsedData),
                         chatId: parseInt(roomId),
                     }
-                })
+                });
+
             }
         },
     }

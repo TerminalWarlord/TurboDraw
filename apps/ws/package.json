@@ -11,7 +11,8 @@
     "db": "*"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "types": "*"
 
   },
   "peerDependencies": {

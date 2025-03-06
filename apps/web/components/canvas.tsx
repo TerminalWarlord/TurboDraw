@@ -11,9 +11,12 @@ const Canvas = ({ roomId }: { roomId: number }) => {
     const [currentCanvas, setCurrentCanvas] = useState<DrawCanvas | null>(null);
     const [scale, setScale] = useState(1);
     const [selectedTool, setSelectedTool] = useState<tools>(tools.Rect);
-    const [windowSize, setWindowSize] = useState<{ height: number, width: number }>({ width: window.innerWidth, height: window.innerHeight });
+    const [windowSize, setWindowSize] = useState<{ height: number, width: number }>({ width: 0, height: 0 });
 
     console.log(scale);
+    useEffect(() => {
+        setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    }, []);
 
     useEffect(() => {
         const handleZoom = (event: WheelEvent) => {
@@ -92,6 +95,7 @@ const Canvas = ({ roomId }: { roomId: number }) => {
 
         // drawCanvas(canvasRef.current, socket, roomId);
         const drawCanvas = new DrawCanvas(canvasRef.current, socket, roomId);
+        drawCanvas.clearCanvas();
         setCurrentCanvas(drawCanvas);
 
 

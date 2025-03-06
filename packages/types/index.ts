@@ -1,16 +1,19 @@
 
-
-
-export interface Circle {
+interface BasicShape {
+    id: string;
     type: "shape";
+    initialX?: number;
+    initialY?: number;
+}
+
+export interface Circle extends BasicShape {
     shape: tools;
     centerX: number;
     centerY: number;
     radius: number;
 }
 
-export interface Rectangle {
-    type: "shape";
+export interface Rectangle extends BasicShape {
     shape: tools;
     x: number;
     y: number;
@@ -18,21 +21,19 @@ export interface Rectangle {
     height: number;
 }
 
-export interface Line {
-    type: "shape",
+export interface Line extends BasicShape {
     shape: tools;
     startX: number,
     startY: number,
     endX: number,
     endY: number,
 }
-export interface Pencil {
+export interface Pencil extends BasicShape {
     shape: tools;
     path: { x: number, y: number }[]
 };
 
-export interface Text {
-    type: "shape",
+export interface Text  extends BasicShape  {
     shape: tools;
     font: string,
     x: number,
@@ -51,7 +52,8 @@ export enum tools {
     Line = "line",
     Text = "text",
     Image = "image",
-    Selection = "selection"
+    Selection = "selection",
+    Eraser = "eraser"
 }
 
 export type SelectedTool = tools;

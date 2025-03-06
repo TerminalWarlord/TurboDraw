@@ -19,11 +19,13 @@ export class DrawCanvas {
     private offsetX: number = 0;
     private offsetY: number = 0;
     private pencilPaths: { x: number, y: number }[] = [];
-    private selectedElement!: Shape;
+    private selectedElement: Shape | null = null;
+    private timer: NodeJS.Timeout | null = null;
     constructor(canvas: HTMLCanvasElement, socket: WebSocket, roomId: number) {
         this.canvas = canvas;
         this.socket = socket;
         this.roomId = roomId;
+        this.timer = null;
         this.init();
         this.clearCanvas();
         this.handleSocket();
@@ -38,6 +40,9 @@ export class DrawCanvas {
         }
         this.existingShapes = await getExisitingShapes(this.roomId);
         this.clearCanvas();
+    }
+    getCanvas() {
+        return this.canvas;
     }
     getClicked() {
         return this.clicked;
@@ -72,6 +77,10 @@ export class DrawCanvas {
             offsetY: this.offsetY
         }
     }
+    getTimer() {
+        return this.timer;
+    }
+
 
     getSelectedElement() {
         return this.selectedElement;
@@ -92,8 +101,8 @@ export class DrawCanvas {
         this.clicked = state;
     }
 
-    setExisitingShapes(obj: Shape) {
-        this.existingShapes.push(obj);
+    setExisitingShapes(obj: Shape[]) {
+        this.existingShapes = obj;
     }
     setPencilPaths(paths: { x: number, y: number }[]) {
         this.pencilPaths = paths;
@@ -101,9 +110,13 @@ export class DrawCanvas {
     setSelectedElement(shape: Shape) {
         this.selectedElement = shape;
     }
+    setTimer(timer: NodeJS.Timeout) {
+        this.timer = timer;
+    }
 
     updateSelectedTool = (tool: tools) => {
         this.selectedTool = tool;
+        this.selectedElement = null;
     }
 
     clearCanvas = () => {
@@ -159,9 +172,24 @@ export class DrawCanvas {
     handleSocket = () => {
         this.socket.onmessage = (ev) => {
             const parsedData = JSON.parse(ev.data);
+            console.log(parsedData);
 
-            if (parsedData.shape === 'rect') {
+            if (parsedData.type === "erase") {
+                const id: string = parsedData.id;
+                console.log("ws response", id);
+                const newListOfShapes = this.existingShapes.filter(s => s.id !== id);
+                console.log(newListOfShapes.length, this.existingShapes.length);
+                this.existingShapes = newListOfShapes;
+                this.clearCanvas();
+            }
+            else if (parsedData.shape === 'rect') {
                 this.existingShapes.push(parsedData);
+                this.clearCanvas();
+            }
+            else if (parsedData.shape === 'circle') {
+                console.log("received circle", this.existingShapes.length);
+                this.existingShapes.push(parsedData);
+                console.log(this.existingShapes.length);
                 this.clearCanvas();
             }
 

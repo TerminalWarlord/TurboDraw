@@ -1,6 +1,8 @@
 import { Rectangle, tools } from "types/types";
 import { DrawCanvas } from "../canvas-helper";
 import { dragItem } from "../drag-item";
+import { getSelectedElement } from "../get-selected-element";
+import { resize } from "../resize";
 
 
 export const mouseMoveHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
@@ -39,7 +41,14 @@ export const mouseMoveHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
             instance.setPencilPaths(newPencilPaths);
         }
         else if (selectedTool === tools.Selection) {
-            const ctx = instance.getCtx();
+            const canvas = instance.getCanvas();
+            canvas.style.cursor = "move";
+
+
+            // TODO: ADD RESIZE LOGIC HERE
+            resize(instance)(ev.clientX, ev.clientY);
+
+
             const selectedElement = instance.getSelectedElement();
             if (!selectedElement) {
                 console.log("nothing selected");
@@ -48,22 +57,34 @@ export const mouseMoveHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
             console.log("moving");
 
             const newShapes = instance.getExistingShapes().filter(shape => shape !== selectedElement);
-            // if (selectedElement.shape === tools.Rect) {
-            //     const rect = selectedElement as Rectangle;
-            //     rect.x=ev.clientX;
-            //     rect.y=ev.clientY;
-            // newShapes.push(rect);
-            // instance.clearCanvas();
-            // }
             const updatedShape = dragItem(instance)(ev, selectedElement);
             if (updatedShape) {
+                console.log("moved", updatedShape);
                 newShapes.push(updatedShape);
+                instance.setExisitingShapes(newShapes);
                 instance.clearCanvas();
             }
-
+        }
+        else if (selectedTool === tools.Eraser) {
+            getSelectedElement(instance)(ev.clientX, ev.clientY);
+            const selectedElement = instance.getSelectedElement();
+            if (!selectedElement) {
+                console.log("nothing selected");
+                return;
+            }
+            console.log("removing");
+            const newShapes = instance.getExistingShapes().filter(shape => shape !== selectedElement);
+            instance.setExisitingShapes(newShapes)
+            instance.clearCanvas();
 
         }
 
 
+    }
+
+    else {
+        if (selectedTool === tools.Selection) {
+            resize(instance)(ev.clientX, ev.clientY);
+        }
     }
 }

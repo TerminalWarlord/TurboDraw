@@ -1,4 +1,4 @@
-import { Circle, Image, MousePointer, Pencil, PencilIcon, RectangleHorizontal, Slash } from "lucide-react"
+import { Circle, Eraser, Image, MousePointer, Pencil, PencilIcon, RectangleHorizontal, Slash } from "lucide-react"
 import IconButton from "./icon-button"
 import { tools } from "types/types"
 
@@ -32,6 +32,10 @@ const Tools = ({ selectedTool, changeTool }: {
             <IconButton
                 icon={<MousePointer size={18} onClick={() => { changeTool(tools.Selection) }} />}
                 selected={selectedTool === tools.Selection}
+            />
+            <IconButton
+                icon={<Eraser size={18} onClick={() => { changeTool(tools.Eraser) }} />}
+                selected={selectedTool === tools.Eraser}
             />
         </div>
     )

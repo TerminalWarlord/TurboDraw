@@ -14,9 +14,10 @@ export const mouseDownHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
         ctx.beginPath();
         ctx.moveTo(instance.getStartX() + offsetX, instance.getStartY() + offsetY);
     }
-    else if (instance.getSelectedTool() === tools.Selection) {
+    else if (instance.getSelectedTool() === tools.Selection || instance.getSelectedTool() === tools.Eraser ) {
         console.log(ev.clientX, ev.clientY);
         getSelectedElement(instance)(ev.clientX, ev.clientY);
+        console.log(instance.getSelectedElement())
     }
 
 
