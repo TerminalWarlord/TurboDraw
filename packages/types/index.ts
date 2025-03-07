@@ -53,7 +53,8 @@ export enum tools {
     Text = "text",
     Image = "image",
     Selection = "selection",
-    Eraser = "eraser"
+    Eraser = "eraser",
+    Hand = "hand"
 }
 
 export type SelectedTool = tools;

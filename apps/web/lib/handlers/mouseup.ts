@@ -12,13 +12,16 @@ export const mouseUpHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
     const roomId = instance.getRoomId();
     const socket = instance.getSocket();
     const pencilPaths = instance.getPencilPaths();
+    const canvas = instance.getCanvas();
+
+    const { x: transformedX, y: transformedY } = instance.transformMouseCoordinates(ev.clientX, ev.clientY);
 
     if (instance.getSelectedTool() === tools.Pencil) {
         ctx.beginPath();
     }
 
-    const width = ev.clientX - startX;
-    const height = ev.clientY - startY;
+    const width = transformedX - startX;
+    const height = transformedY - startY;
     const id = uuidv4();
     let obj: Shape | null = null;
     const shapeType = selectedTool.toString();
@@ -53,8 +56,8 @@ export const mouseUpHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
             shape: selectedTool,
             startX: startX,
             startY: startY,
-            endX: ev.clientX,
-            endY: ev.clientY
+            endX: transformedX,
+            endY: transformedY
         }
     }
     else if (selectedTool === tools.Pencil) {
@@ -67,9 +70,12 @@ export const mouseUpHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
         instance.setPencilPaths([])
     }
     else if (selectedTool === tools.Selection) {
-        const canvas = instance.getCanvas();
         canvas.style.cursor = "default";
     }
+    else if (selectedTool === tools.Hand) {
+        canvas.style.cursor = "default";
+    }
+    instance.setSelectedElement(null);
     if (!obj) {
         return;
     }
@@ -89,6 +95,5 @@ export const mouseUpHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
         shape: shapeType
     }))
     instance.clearCanvas();
-    instance.setSelectedElement(null);
 
 };

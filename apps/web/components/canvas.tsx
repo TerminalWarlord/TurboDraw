@@ -18,29 +18,29 @@ const Canvas = ({ roomId }: { roomId: number }) => {
         setWindowSize({ width: window.innerWidth, height: window.innerHeight });
     }, []);
 
-    useEffect(() => {
-        const handleZoom = (event: WheelEvent) => {
-            console.log(event);
-            if (!event.ctrlKey && !event.metaKey) {
-                return;
-            }
-            event.preventDefault();
-            console.log("resizing");
+    // useEffect(() => {
+    //     const handleZoom = (event: WheelEvent) => {
+    //         console.log(event);
+    //         if (!event.ctrlKey && !event.metaKey) {
+    //             return;
+    //         }
+    //         event.preventDefault();
+    //         console.log("resizing");
 
-            const scaleFactor = 0.001;
+    //         const scaleFactor = 0.001;
 
-            if (event.deltaY < 0) {
-                setScale(prevScale => Math.min(prevScale + scaleFactor, 2));
-            } else {
-                setScale(prevScale => Math.max(0.1, prevScale - scaleFactor));
-            }
-        };
-        window.addEventListener("wheel", handleZoom, { passive: false });
+    //         if (event.deltaY < 0) {
+    //             setScale(prevScale => Math.min(prevScale + scaleFactor, 2));
+    //         } else {
+    //             setScale(prevScale => Math.max(0.1, prevScale - scaleFactor));
+    //         }
+    //     };
+    //     window.addEventListener("wheel", handleZoom, { passive: false });
 
-        return () => {
-            window.removeEventListener("wheel", handleZoom);
-        }
-    }, [])
+    //     return () => {
+    //         window.removeEventListener("wheel", handleZoom);
+    //     }
+    // }, [])
 
 
 
@@ -118,14 +118,12 @@ const Canvas = ({ roomId }: { roomId: number }) => {
             return;
         }
 
-        const scaledWidth = windowSize.width / scale;
-        const scaledHeight = windowSize.height / scale;
 
         // Reset transformation before applying new scale
         ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transformations
         // ctx.clearRect(0, 0, scaledWidth, scaledHeight); // Clear the canvas
-        ctx.setTransform(scale, 0, 0, scale, 0, 0); // Apply new scale
-    }, [scale, windowSize])
+        // ctx.setTransform(scale, 0, 0, scale, 0, 0); // Apply new scale
+    }, [])
 
     function changeTool(tool: tools) {
         console.log(tool);
@@ -139,6 +137,10 @@ const Canvas = ({ roomId }: { roomId: number }) => {
             </canvas>
 
             <Tools changeTool={changeTool} selectedTool={selectedTool} />
+            <div className="fixed bottom-4 right-4 flex space-x-1">
+                <button onClick={currentCanvas?.zoomOut} className="h-8 aspect-square bg-cyan-200 rounded-full text-xl text-black">-</button>
+                <button onClick={currentCanvas?.zoomIn} className="h-8 aspect-square bg-cyan-200 rounded-full text-xl text-black">+</button>
+            </div>
         </div>
     )
 }

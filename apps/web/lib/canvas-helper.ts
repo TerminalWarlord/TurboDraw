@@ -16,8 +16,9 @@ export class DrawCanvas {
     private startX = 0;
     private startY = 0;
     private ctx!: CanvasRenderingContext2D;
-    private offsetX: number = 0;
-    private offsetY: number = 0;
+    private scale: number = 1;
+    private panOffsets: { x: number, y: number } = { x: 0, y: 0 };
+    private lastMousePosition: { x: number, y: number } = { x: 0, y: 0 };
     private pencilPaths: { x: number, y: number }[] = [];
     private selectedElement: Shape | null = null;
     private timer: NodeJS.Timeout | null = null;
@@ -71,25 +72,29 @@ export class DrawCanvas {
     getExistingShapes() {
         return this.existingShapes;
     }
-    getOffsets() {
-        return {
-            offsetX: this.offsetX,
-            offsetY: this.offsetY
-        }
+    getPanOffsets() {
+        return this.panOffsets
     }
     getTimer() {
         return this.timer;
     }
-
+    getLastMousePosition() {
+        return this.lastMousePosition;
+    }
 
     getSelectedElement() {
         return this.selectedElement;
     }
-    setOffsetX(offset: number) {
-        this.offsetX = offset;
+
+    getScale() {
+        return this.scale;
     }
-    setOffsetY(offset: number) {
-        this.offsetY = offset;
+
+    setPanOffsetX(offset: number) {
+        this.panOffsets.x = offset;
+    }
+    setPanOffsetY(offset: number) {
+        this.panOffsets.y = offset;
     }
     setStartX(x: number) {
         this.startX = x;
@@ -107,11 +112,18 @@ export class DrawCanvas {
     setPencilPaths(paths: { x: number, y: number }[]) {
         this.pencilPaths = paths;
     }
-    setSelectedElement(shape: Shape|null) {
+    setSelectedElement(shape: Shape | null) {
         this.selectedElement = shape;
     }
     setTimer(timer: NodeJS.Timeout) {
         this.timer = timer;
+    }
+    setLastMousePosition(x: number, y: number) {
+        this.lastMousePosition = { x, y };
+    }
+
+    setScale(val: number) {
+        this.scale = val;
     }
 
     updateSelectedTool = (tool: tools) => {
@@ -119,14 +131,45 @@ export class DrawCanvas {
         this.selectedElement = null;
     }
 
+
+    zoomIn = () => {
+        this.scale *= 1.1;
+        this.clearCanvas();
+    }
+    zoomOut = () => {
+        this.scale /= 1.1;
+        this.clearCanvas();
+    }
+    
+    transformMouseCoordinates = (x: number, y: number) => {
+        const rect = this.canvas.getBoundingClientRect();
+        const scale = this.scale;
+        const panOffsetX = this.panOffsets.x;
+        const panOffsetY = this.panOffsets.y;
+    
+        return {
+            x: (x - rect.left - panOffsetX) / scale,
+            y: (y - rect.top - panOffsetY) / scale,
+        };
+    };
+
+
     clearCanvas = () => {
         const ctx = this.canvas.getContext("2d");
         if (!ctx) {
             return;
         }
+
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         ctx.fillStyle = "rgb(0,0,0)";
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        ctx.translate(this.panOffsets.x, this.panOffsets.y);
+        ctx.scale(this.scale, this.scale);
+
         this.existingShapes.map((shape: Shape) => {
             // console.log(typeof shape);
             ctx.strokeStyle = "rgb(255, 255, 255)";
@@ -166,7 +209,8 @@ export class DrawCanvas {
                 })
                 this.ctx.stroke();
             }
-        })
+        });
+        ctx.restore();
     }
 
 

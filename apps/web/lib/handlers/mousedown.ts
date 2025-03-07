@@ -4,20 +4,26 @@ import { getSelectedElement } from "../get-selected-element";
 
 
 export const mouseDownHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
-    instance.setStartX(ev.clientX);
-    instance.setStartY(ev.clientY);
+    const { x: transformedX, y: transformedY } = instance.transformMouseCoordinates(ev.clientX, ev.clientY);
+    instance.setStartX(transformedX);
+    instance.setStartY(transformedY);
     instance.setClicked(true);
-    const { offsetX, offsetY } = instance.getOffsets();
+    const { x: panOffsetX, y: panOffsetY } = instance.getPanOffsets();
     const ctx = instance.getCtx();
 
     if (instance.getSelectedTool() === tools.Pencil) {
         ctx.beginPath();
-        ctx.moveTo(instance.getStartX() + offsetX, instance.getStartY() + offsetY);
+        ctx.moveTo(transformedX, transformedY);
     }
-    else if (instance.getSelectedTool() === tools.Selection || instance.getSelectedTool() === tools.Eraser ) {
+    else if (instance.getSelectedTool() === tools.Selection || instance.getSelectedTool() === tools.Eraser) {
         console.log(ev.clientX, ev.clientY);
-        getSelectedElement(instance)(ev.clientX, ev.clientY);
+        getSelectedElement(instance)(transformedX, transformedY);
         console.log(instance.getSelectedElement())
+    }
+    else if (instance.getSelectedTool() === tools.Hand) {
+        instance.setLastMousePosition(ev.clientX, ev.clientY);
+        const canvas = instance.getCanvas();
+        canvas.style.cursor = "grabbing";
     }
 
 
