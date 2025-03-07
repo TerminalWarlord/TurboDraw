@@ -8,7 +8,6 @@ export const mouseDownHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
     instance.setStartX(transformedX);
     instance.setStartY(transformedY);
     instance.setClicked(true);
-    const { x: panOffsetX, y: panOffsetY } = instance.getPanOffsets();
     const ctx = instance.getCtx();
 
     if (instance.getSelectedTool() === tools.Pencil) {
@@ -21,7 +20,7 @@ export const mouseDownHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
         console.log(instance.getSelectedElement())
     }
     else if (instance.getSelectedTool() === tools.Hand) {
-        instance.setLastMousePosition(ev.clientX, ev.clientY);
+        instance.setLastMousePosition(transformedX, transformedY);
         const canvas = instance.getCanvas();
         canvas.style.cursor = "grabbing";
     }

@@ -59,7 +59,7 @@ const isOnEdge = (instance: DrawCanvas) => (shape: Shape, canvas: HTMLCanvasElem
 
         if (left) {
             canvas.style.cursor = "w-resize";
-            if(instance.getClicked()){
+            if(instance.getClicked() && instance.getSelectedElement() && instance.getSelectedElement()===shape){
                 const deltaX = rect.x - x;
                 rect.x = x;
                 rect.width += deltaX;

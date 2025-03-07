@@ -4,6 +4,7 @@ import { DrawCanvas } from "@/lib/canvas-helper";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { tools } from "types/types";
 import Tools from "./tools";
+import { ZoomIn, ZoomOut, ZoomOutIcon } from "lucide-react";
 
 
 const Canvas = ({ roomId }: { roomId: number }) => {
@@ -137,9 +138,9 @@ const Canvas = ({ roomId }: { roomId: number }) => {
             </canvas>
 
             <Tools changeTool={changeTool} selectedTool={selectedTool} />
-            <div className="fixed bottom-4 right-4 flex space-x-1">
-                <button onClick={currentCanvas?.zoomOut} className="h-8 aspect-square bg-cyan-200 rounded-full text-xl text-black">-</button>
-                <button onClick={currentCanvas?.zoomIn} className="h-8 aspect-square bg-cyan-200 rounded-full text-xl text-black">+</button>
+            <div className="fixed bottom-4 right-4 flex space-x-1 items-center justify-center">
+                <button onClick={currentCanvas?.zoomOut} className="p-4 aspect-square bg-cyan-200 rounded-full text-5xl text-black"><ZoomOut size={25}/> </button>
+                <button onClick={currentCanvas?.zoomIn} className="p-4 aspect-square bg-cyan-200 rounded-full text-3xl text-black"><ZoomIn size={25} /></button>
             </div>
         </div>
     )

@@ -40,7 +40,7 @@ export const mouseMoveHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
             }
             ctx.save();
             ctx.translate(panOffsetX, panOffsetY);
-            // ctx.scale(scale, scale);
+            ctx.scale(scale, scale);
 
             ctx.strokeStyle = "rgb(255, 255, 255)";
             if (selectedTool === tools.Rect) {
@@ -59,6 +59,9 @@ export const mouseMoveHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
                 ctx.stroke();
             }
             else if (selectedTool === tools.Pencil) {
+                if (!instance.getPencilPaths().length) {
+                    ctx.moveTo(transformedX, transformedY);  // Ensure correct starting point
+                }
                 ctx.lineTo(transformedX, transformedY);
                 ctx.stroke();
                 const newPencilPaths = [...instance.getPencilPaths(), { x: transformedX, y: transformedY}];
@@ -81,7 +84,11 @@ export const mouseMoveHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
                 console.log("moving");
 
                 const newShapes = instance.getExistingShapes().filter(shape => shape !== selectedElement);
-                const updatedShape = dragItem(instance)(ev, selectedElement);
+                const updatedShape = dragItem(instance)({
+                    ...ev,
+                    clientX: transformedX,
+                    clientY: transformedY
+                }, selectedElement);
                 if (updatedShape) {
                     console.log("moved", updatedShape);
                     newShapes.push(updatedShape);

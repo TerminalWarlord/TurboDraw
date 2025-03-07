@@ -17,8 +17,8 @@ export const dragItem = (instance: DrawCanvas) => (ev: MouseEvent, selectedEleme
     if (selectedElement.shape === tools.Rect) {
         const rect = selectedElement as Rectangle;
         canvas.style.cursor = "move";
-        rect.x = ev.clientX - (rect.initialX || 0) - panOffsetX;
-        rect.y = ev.clientY - (rect.initialY || 0) - panOffsetY;
+        rect.x = ev.clientX - (rect.initialX || 0);
+        rect.y = ev.clientY - (rect.initialY || 0);
         updateShapeCoordinates(socket,
             rect.id,
             roomId,
@@ -41,8 +41,8 @@ export const dragItem = (instance: DrawCanvas) => (ev: MouseEvent, selectedEleme
     else if (selectedElement.shape === tools.Circle) {
         const circle = selectedElement as Circle;
         canvas.style.cursor = "move";
-        circle.centerX = ev.clientX - (circle.initialX || 0) - panOffsetX;
-        circle.centerY = ev.clientY - (circle.initialY || 0) - panOffsetY;
+        circle.centerX = ev.clientX - (circle.initialX || 0);
+        circle.centerY = ev.clientY - (circle.initialY || 0);
         console.log("dragging")
         updateShapeCoordinates(socket,
             circle.id,
@@ -66,8 +66,8 @@ export const dragItem = (instance: DrawCanvas) => (ev: MouseEvent, selectedEleme
     else if (selectedElement.shape === tools.Line) {
         const line = selectedElement as Line;
 
-        const deltaX = ev.clientX - (line.initialX || 0) - panOffsetX;
-        const deltaY = ev.clientY - (line.initialY || 0) - panOffsetY;
+        const deltaX = ev.clientX - (line.initialX || 0);
+        const deltaY = ev.clientY - (line.initialY || 0);
         const width = Math.abs(line.endX - line.startX);
         const height = Math.abs(line.endY - line.startY);
 
@@ -99,8 +99,8 @@ export const dragItem = (instance: DrawCanvas) => (ev: MouseEvent, selectedEleme
 
     else if (selectedElement.shape === tools.Pencil) {
         const pencilPaths = selectedElement as Pencil;
-        const deltaX = ev.clientX - (pencilPaths.initialX || 0) - panOffsetX;
-        const deltaY = ev.clientY - (pencilPaths.initialY || 0) - panOffsetY;
+        const deltaX = ev.clientX - (pencilPaths.initialX || 0);
+        const deltaY = ev.clientY - (pencilPaths.initialY || 0);
 
         pencilPaths.path.forEach(p => {
             console.log(p);
@@ -120,8 +120,8 @@ export const dragItem = (instance: DrawCanvas) => (ev: MouseEvent, selectedEleme
             timer,
             setTimerFn
         );
-        pencilPaths.initialX = ev.clientX - panOffsetX;
-        pencilPaths.initialY = ev.clientY - panOffsetY;
+        pencilPaths.initialX = ev.clientX;
+        pencilPaths.initialY = ev.clientY;
         instance.clearCanvas();
         return pencilPaths;
     }

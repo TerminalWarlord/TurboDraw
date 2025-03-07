@@ -4,7 +4,10 @@ import { mouseUpHandler } from "./handlers/mouseup";
 import { mouseDownHandler } from "./handlers/mousedown";
 import { mouseMoveHandler } from "./handlers/mousemove";
 
-
+// TODO: 
+// 1. Add undo/redo
+// 2. Add zoom in/out using wheel action
+// 3. Add Text Shape    
 
 export class DrawCanvas {
     private existingShapes: Shape[] = [];
@@ -140,18 +143,13 @@ export class DrawCanvas {
         this.scale /= 1.1;
         this.clearCanvas();
     }
-    
-    transformMouseCoordinates = (x: number, y: number) => {
+
+    transformMouseCoordinates(clientX: number, clientY: number) {
         const rect = this.canvas.getBoundingClientRect();
-        const scale = this.scale;
-        const panOffsetX = this.panOffsets.x;
-        const panOffsetY = this.panOffsets.y;
-    
-        return {
-            x: (x - rect.left - panOffsetX) / scale,
-            y: (y - rect.top - panOffsetY) / scale,
-        };
-    };
+        const x = (clientX - rect.left - this.panOffsets.x) / this.scale;
+        const y = (clientY - rect.top - this.panOffsets.y) / this.scale;
+        return { x, y };
+    }
 
 
     clearCanvas = () => {
