@@ -1,8 +1,9 @@
-import { Shape, SelectedTool, tools, Rectangle, Circle, PencilPath, Line, Pencil } from "types/types";
+import { Shape, SelectedTool, tools, Rectangle, Circle, PencilPath, Line, Pencil, Text } from "types/types";
 import { getExisitingShapes } from "./http";
 import { mouseUpHandler } from "./handlers/mouseup";
 import { mouseDownHandler } from "./handlers/mousedown";
 import { mouseMoveHandler } from "./handlers/mousemove";
+import { clickHandler } from "./handlers/click";
 
 // TODO: 
 // 1. Add undo/redo
@@ -25,6 +26,10 @@ export class DrawCanvas {
     private pencilPaths: { x: number, y: number }[] = [];
     private selectedElement: Shape | null = null;
     private timer: NodeJS.Timeout | null = null;
+    private textInput: HTMLInputElement | null = null;
+    private currentText: Text | null = null;
+    private textEditMode: boolean = false;
+
     constructor(canvas: HTMLCanvasElement, socket: WebSocket, roomId: number) {
         this.canvas = canvas;
         this.socket = socket;
@@ -93,6 +98,22 @@ export class DrawCanvas {
         return this.scale;
     }
 
+    getTextInput() {
+        return this.textInput;
+    }
+    getCurrentText() {
+        return this.currentText;
+    }
+
+    setCurrentText(text: Text) {
+        this.currentText = text;
+    }
+
+    setTextInput(text: HTMLInputElement) {
+        this.textInput = text;
+    }
+
+
     setPanOffsetX(offset: number) {
         this.panOffsets.x = offset;
     }
@@ -152,6 +173,18 @@ export class DrawCanvas {
     }
 
 
+    clearEditMode = () => {
+
+        if (this.textInput && this.textInput.parentNode) {
+            console.log("removing input")
+            document.body.removeChild(this.textInput);
+            this.textInput = null;
+        }
+        this.textEditMode = false;
+        this.currentText = null;
+
+    }
+
     clearCanvas = () => {
         const ctx = this.canvas.getContext("2d");
         if (!ctx) {
@@ -171,6 +204,7 @@ export class DrawCanvas {
         this.existingShapes.map((shape: Shape) => {
             // console.log(typeof shape);
             ctx.strokeStyle = "rgb(255, 255, 255)";
+            ctx.fillStyle = "rgb(255, 255, 255)";
             if (shape.shape === tools.Rect) {
                 // ctx.strokeStyle = "rgb(255, 255, 255)";
                 const rect = shape as Rectangle;
@@ -206,6 +240,13 @@ export class DrawCanvas {
                     return this.ctx.lineTo(p.x, p.y);
                 })
                 this.ctx.stroke();
+            }
+
+            else if(shape.shape===tools.Text){
+                const txt = shape as Text;
+                ctx.font = `${txt.fontSize}px ${txt.fontFamily}`;
+                ctx.fillText(txt.text, txt.x, txt.y);
+
             }
         });
         ctx.restore();
@@ -250,12 +291,14 @@ export class DrawCanvas {
         this.canvas.addEventListener("mousedown", mouseDownHandler(this));
         this.canvas.addEventListener("mouseup", mouseUpHandler(this));
         this.canvas.addEventListener("mousemove", mouseMoveHandler(this));
+        this.canvas.addEventListener("click", clickHandler(this));
     }
 
     destroy = () => {
         this.canvas.removeEventListener("mousedown", mouseDownHandler(this));
         this.canvas.removeEventListener("mouseup", mouseUpHandler(this));
         this.canvas.removeEventListener("mousemove", mouseMoveHandler(this));
+        this.canvas.removeEventListener("click", clickHandler(this));
     }
 
 

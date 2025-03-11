@@ -2,7 +2,7 @@ import { Circle, Rectangle, Shape, tools } from "types/types";
 import { DrawCanvas } from "./canvas-helper";
 import { distance } from "./get-selected-element";
 
-const MARGIN_OF_ERROR = 5;
+export const MARGIN_OF_ERROR = 5;
 
 
 const isOnCorner = (shape: Shape, canvas: HTMLCanvasElement, x: number, y: number) => {

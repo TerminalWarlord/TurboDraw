@@ -1,5 +1,6 @@
-import { Circle, Line, Pencil, Rectangle, Shape, tools } from "types/types";
+import { Circle, Line, Pencil, Rectangle, Shape, Text, tools } from "types/types";
 import { DrawCanvas } from "./canvas-helper";
+import { MARGIN_OF_ERROR } from "./resize";
 
 
 export const distance = (x1: number, x2: number, y1: number, y2: number) => Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
@@ -31,7 +32,7 @@ const isCircle = (instance: DrawCanvas) => (shape: Shape, x: number, y: number):
     const centerY = circle.centerY;
     const radius = circle.radius;
     const distanceFromCenter = distance(centerX, x, centerY, y);
-    
+
     if (distanceFromCenter <= radius) {
         console.log("sniffing circle", distanceFromCenter, radius);
         circle.initialX = x - circle.centerX;
@@ -42,6 +43,29 @@ const isCircle = (instance: DrawCanvas) => (shape: Shape, x: number, y: number):
 
 
     return null;
+}
+
+
+const isText = (instance: DrawCanvas) => (shape: Shape, x: number, y: number): Shape | null => {
+    const ctx = instance.getCtx();
+    const textShape = shape as Text;
+    const width = ctx.measureText(textShape.text).width;
+    const height = textShape.fontSize;
+
+    const { x: x1, y: y1 } = textShape;
+    const x2 = x1 + width;
+    const y2 = y1 + height;
+    console.log({ x1, x2, y1, y2, x, y });
+
+
+    if (x >= x1 - MARGIN_OF_ERROR*5 && x <= x2 + MARGIN_OF_ERROR*5 && y >= y1 - MARGIN_OF_ERROR*5 && y <= y2 + MARGIN_OF_ERROR*5) {
+        instance.setSelectedElement(textShape);
+        return textShape;
+    }
+
+
+    return null;
+
 }
 
 
@@ -61,6 +85,10 @@ const isLine = (instance: DrawCanvas) => (shape: Shape, x: number, y: number): S
 
     return null;
 }
+
+
+
+
 
 
 const isPencil = (instance: DrawCanvas) => (shape: Shape, x: number, y: number): Shape | null => {
@@ -108,6 +136,10 @@ export const getSelectedElement = (instance: DrawCanvas) => (x: number, y: numbe
         else if (shape.shape === tools.Pencil) {
             const pencilPath = isPencil(instance)(shape, x, y);
             return pencilPath;
+        }
+        else if (shape.shape === tools.Text) {
+            const textShape = isText(instance)(shape, x, y);
+            return textShape;
         }
 
     })

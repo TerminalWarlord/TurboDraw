@@ -1,4 +1,4 @@
-import { Circle, Line, Pencil, Rectangle, Shape, tools } from "types/types";
+import { Circle, Line, Pencil, Rectangle, Shape, Text, tools } from "types/types";
 import { DrawCanvas } from "./canvas-helper";
 import { updateShapeCoordinates } from "./socket";
 import { v4 as uuidv4 } from "uuid";
@@ -125,5 +125,33 @@ export const dragItem = (instance: DrawCanvas) => (ev: MouseEvent, selectedEleme
         instance.clearCanvas();
         return pencilPaths;
     }
+    else if (selectedElement.shape === tools.Text) {
+        const textShape = selectedElement as Text;
+
+        const deltaX = ev.clientX - (textShape.initialX || 0);
+        const deltaY = ev.clientY - (textShape.initialY || 0);
+
+
+        textShape.x = deltaX;
+        textShape.y = deltaY;
+
+        updateShapeCoordinates(socket, textShape.id, roomId, JSON.stringify({
+            roomId,
+            id: textShape.id,
+            type: "shape",
+            shape: tools.Text,
+            x: deltaX,
+            y: deltaY,
+            text: textShape.text,
+            fontFamily: textShape.fontFamily,
+            fontSize: textShape.fontSize
+        }),
+            timer,
+            setTimerFn
+        );
+
+    }
+
+
     return selectedElement;
 } 

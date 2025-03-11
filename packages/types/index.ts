@@ -23,21 +23,23 @@ export interface Rectangle extends BasicShape {
 
 export interface Line extends BasicShape {
     shape: tools;
-    startX: number,
-    startY: number,
-    endX: number,
-    endY: number,
+    startX: number;
+    startY: number;
+    endX: number;
+    endY: number;
 }
 export interface Pencil extends BasicShape {
     shape: tools;
-    path: { x: number, y: number }[]
+    path: { x: number, y: number }[];
 };
 
 export interface Text  extends BasicShape  {
     shape: tools;
-    font: string,
-    x: number,
-    y: number,
+    fontSize: number;
+    fontFamily: string;
+    text: string;
+    x: number;
+    y: number;
 };
 
 
