@@ -59,7 +59,7 @@ const isOnEdge = (instance: DrawCanvas) => (shape: Shape, canvas: HTMLCanvasElem
 
         if (left) {
             canvas.style.cursor = "w-resize";
-            if(instance.getClicked() && instance.getSelectedElement() && instance.getSelectedElement()===shape){
+            if (instance.getClicked() && instance.getSelectedElement() && instance.getSelectedElement() === shape) {
                 const deltaX = rect.x - x;
                 rect.x = x;
                 rect.width += deltaX;
@@ -84,13 +84,11 @@ const isOnEdge = (instance: DrawCanvas) => (shape: Shape, canvas: HTMLCanvasElem
     }
     else if (shape.shape === tools.Circle) {
         const circle = shape as Circle;
-        const radius = circle.radius;
-        const centerX = circle.centerX;
-        const centerY = circle.centerY;
+        const { centerX, centerY, radiusX, radiusY } = circle;
         const distanceFromCenter = distance(centerX, x, centerY, y);
 
 
-        if (Math.abs(distanceFromCenter - radius) < MARGIN_OF_ERROR) {
+        if (Math.abs(distanceFromCenter - Math.max(radiusX, radiusY)) < MARGIN_OF_ERROR) {
             const angle = Math.atan2(y - centerY, x - centerX);
             const degrees = (angle * 180 / Math.PI + 360) % 360;
 

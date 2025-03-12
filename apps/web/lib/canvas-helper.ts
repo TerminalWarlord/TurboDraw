@@ -4,6 +4,7 @@ import { mouseUpHandler } from "./handlers/mouseup";
 import { mouseDownHandler } from "./handlers/mousedown";
 import { mouseMoveHandler } from "./handlers/mousemove";
 import { clickHandler } from "./handlers/click";
+import { wheelHandler } from "./handlers/wheel";
 
 // TODO: 
 // 1. Add undo/redo
@@ -217,7 +218,9 @@ export class DrawCanvas {
                 const circle = shape as Circle;
                 // const radius = Math.abs(Math.max(shape.width, shape.height) / 2);
                 this.ctx.beginPath();
-                this.ctx.arc(circle.centerX, circle.centerY, circle.radius, 0, 2 * Math.PI);
+                // this.ctx.arc(circle.centerX, circle.centerY, circle.radius, 0, 2 * Math.PI);
+                this.ctx.ellipse(circle.centerX, circle.centerY, circle.radiusX, circle.radiusY, 0, 0, 2 * Math.PI);
+                // this.ctx.ellipse(circle.centerX)
                 this.ctx.stroke();
             }
             else if (shape.shape === tools.Line) {
@@ -242,7 +245,7 @@ export class DrawCanvas {
                 this.ctx.stroke();
             }
 
-            else if(shape.shape===tools.Text){
+            else if (shape.shape === tools.Text) {
                 const txt = shape as Text;
                 ctx.font = `${txt.fontSize}px ${txt.fontFamily}`;
                 ctx.fillText(txt.text, txt.x, txt.y);
@@ -292,6 +295,7 @@ export class DrawCanvas {
         this.canvas.addEventListener("mouseup", mouseUpHandler(this));
         this.canvas.addEventListener("mousemove", mouseMoveHandler(this));
         this.canvas.addEventListener("click", clickHandler(this));
+        this.canvas.addEventListener("wheel", wheelHandler(this));
     }
 
     destroy = () => {
@@ -299,6 +303,7 @@ export class DrawCanvas {
         this.canvas.removeEventListener("mouseup", mouseUpHandler(this));
         this.canvas.removeEventListener("mousemove", mouseMoveHandler(this));
         this.canvas.removeEventListener("click", clickHandler(this));
+        this.canvas.removeEventListener("wheel", wheelHandler(this));
     }
 
 

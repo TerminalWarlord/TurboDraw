@@ -10,7 +10,8 @@ export interface Circle extends BasicShape {
     shape: tools;
     centerX: number;
     centerY: number;
-    radius: number;
+    radiusX: number;
+    radiusY: number;
 }
 
 export interface Rectangle extends BasicShape {

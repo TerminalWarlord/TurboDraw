@@ -1,6 +1,7 @@
 import { tools } from "types/types";
 import { DrawCanvas } from "../canvas-helper";
 import { getSelectedElement } from "../get-selected-element";
+import { clearInputs, inputToCanvas } from "../text";
 
 
 export const mouseDownHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
@@ -9,6 +10,9 @@ export const mouseDownHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
     instance.setStartY(transformedY);
     instance.setClicked(true);
     const ctx = instance.getCtx();
+
+    // Close input boxes if there is any
+    clearInputs(instance)();
 
     if (instance.getSelectedTool() === tools.Pencil) {
         ctx.beginPath();
@@ -20,12 +24,11 @@ export const mouseDownHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
         console.log(instance.getSelectedElement())
     }
     else if (instance.getSelectedTool() === tools.Hand) {
-        instance.setLastMousePosition(transformedX, transformedY);
+        instance.setLastMousePosition(ev.clientX, ev.clientY);
         const canvas = instance.getCanvas();
         canvas.style.cursor = "grabbing";
     }
+    else if (instance.getSelectedTool() === tools.Text) {
 
-
-
-
+    }
 }

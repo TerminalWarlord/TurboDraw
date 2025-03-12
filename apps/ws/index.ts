@@ -19,7 +19,7 @@ Bun.serve({
         return new Response("Upgrade Failed", { status: 500 });
     },
     websocket: {
-        async message(ws:ServerWebSocket, message) {
+        async message(ws: ServerWebSocket, message: string | Buffer) {
             const parsedData = JSON.parse(message as unknown as string);
             console.log(parsedData);
             if (parsedData.type === "join") {
@@ -47,11 +47,11 @@ Bun.serve({
                 const { id, roomId } = parsedData;
                 console.log("Erasing", id, roomId);
                 try {
-                    
-                    
+
+
                     const user = users.find(u => u.roomId === parseInt(roomId));
                     if (!user) return;
-                    
+
                     user.socket.forEach(soc => {
                         soc.send(JSON.stringify({ type: "erase", id }));
                     });
@@ -77,7 +77,7 @@ Bun.serve({
                 user.socket.map(soc => {
                     soc.send(JSON.stringify(parsedData));
                 })
-                try{
+                try {
                     // await prismaClient.message.create({
                     //     data: {
                     //         id,
@@ -86,7 +86,7 @@ Bun.serve({
                     //     }
                     // });
                     await prismaClient.message.upsert({
-                        where: {id},
+                        where: { id },
                         update: {},
                         create: {
                             id,
@@ -95,7 +95,7 @@ Bun.serve({
                         }
                     });
                 }
-                catch(err){
+                catch (err) {
                     console.log("Failed to save shape")
                 }
 

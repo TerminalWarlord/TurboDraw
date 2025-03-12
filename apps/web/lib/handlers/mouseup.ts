@@ -39,14 +39,17 @@ export const mouseUpHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
         }
     }
     else if (instance.getSelectedTool() === tools.Circle) {
-        const radius = Math.abs(Math.max(width, height) / 2);
+        // const radius = Math.abs(Math.max(width, height) / 2);
+        const radiusX = Math.abs(startX - transformedX) / 2;
+        const radiusY = Math.abs(startY - transformedY) / 2;
         obj = {
             id,
+            radiusX,
+            radiusY,
             type: "shape",
             shape: instance.getSelectedTool(),
-            centerX: startX,
-            centerY: startY,
-            radius
+            centerX: transformedX-radiusX,
+            centerY: transformedY-radiusY,
         }
     }
     else if (selectedTool === tools.Line) {

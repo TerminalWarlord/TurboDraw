@@ -47,9 +47,20 @@ export const mouseMoveHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
                 ctx.strokeRect(startX, startY, width, height);
             }
             else if (selectedTool === tools.Circle) {
-                const radius = Math.abs(Math.max(width, height) / 2);
+                // const radius = Math.abs(Math.max(width, height) / 2);
+
+                const radiusX = Math.abs(startX - transformedX) / 2;
+                const radiusY = Math.abs(startY - transformedY) / 2;
+                console.log({
+                    radiusX,
+                    radiusY,
+                    transformedX,
+                    transformedY,
+                    ...ev,
+                })
                 ctx.beginPath();
-                ctx.arc(startX, startY, radius, 0, 2 * Math.PI);
+                // ctx.arc(startX, startY, radius, 0, 2 * Math.PI);
+                ctx.ellipse(transformedX-radiusX, transformedY-radiusY, radiusX, radiusY, 0, 0, 2 * Math.PI);
                 ctx.stroke();
             }
             else if (selectedTool === tools.Line) {
@@ -64,7 +75,7 @@ export const mouseMoveHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
                 }
                 ctx.lineTo(transformedX, transformedY);
                 ctx.stroke();
-                const newPencilPaths = [...instance.getPencilPaths(), { x: transformedX, y: transformedY}];
+                const newPencilPaths = [...instance.getPencilPaths(), { x: transformedX, y: transformedY }];
                 instance.setPencilPaths(newPencilPaths);
             }
             else if (selectedTool === tools.Selection) {
@@ -73,7 +84,7 @@ export const mouseMoveHandler = (instance: DrawCanvas) => (ev: MouseEvent) => {
 
 
                 // TODO: ADD RESIZE LOGIC HERE
-                resize(instance)(transformedX, transformedY);
+                // resize(instance)(transformedX, transformedY);
 
 
                 const selectedElement = instance.getSelectedElement();

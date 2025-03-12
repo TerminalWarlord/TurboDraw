@@ -26,10 +26,6 @@ const Tools = ({ selectedTool, changeTool }: {
                 selected={selectedTool === tools.Line}
             />
             <IconButton
-                icon={<Image size={18} onClick={() => { changeTool(tools.Image) }} />}
-                selected={selectedTool === tools.Image}
-            />
-            <IconButton
                 icon={<MousePointer size={18} onClick={() => { changeTool(tools.Selection) }} />}
                 selected={selectedTool === tools.Selection}
             />

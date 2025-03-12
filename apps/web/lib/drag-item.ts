@@ -54,7 +54,8 @@ export const dragItem = (instance: DrawCanvas) => (ev: MouseEvent, selectedEleme
                 shape: circle.shape,
                 centerX: circle.centerX,
                 centerY: circle.centerY,
-                radius: circle.radius
+                radiusX: circle.radiusX,
+                radiusY: circle.radiusY,
             }),
             timer,
             setTimerFn
@@ -63,39 +64,39 @@ export const dragItem = (instance: DrawCanvas) => (ev: MouseEvent, selectedEleme
         return circle;
     }
 
-    else if (selectedElement.shape === tools.Line) {
-        const line = selectedElement as Line;
+        else if (selectedElement.shape === tools.Line) {
+            const line = selectedElement as Line;
 
-        const deltaX = ev.clientX - (line.initialX || 0);
-        const deltaY = ev.clientY - (line.initialY || 0);
-        const width = Math.abs(line.endX - line.startX);
-        const height = Math.abs(line.endY - line.startY);
+            const deltaX = ev.clientX - (line.initialX || 0);
+            const deltaY = ev.clientY - (line.initialY || 0);
+            const width = line.endX - line.startX;
+            const height = line.endY - line.startY;
 
-        line.startX = deltaX;
-        line.startY = deltaY;
-        line.endX = line.startX + width;
-        line.endY = line.startY + height;
+            line.startX = deltaX;
+            line.startY = deltaY;
+            line.endX = line.startX + width;
+            line.endY = line.startY + height;
 
 
-        updateShapeCoordinates(socket,
-            line.id,
-            roomId,
-            JSON.stringify({
+            updateShapeCoordinates(socket,
+                line.id,
                 roomId,
-                id: newId,
-                type: "shape",
-                shape: line.shape,
-                startX: line.startX,
-                startY: line.startY,
-                endX: line.endX,
-                endY: line.endY
-            }),
-            timer,
-            setTimerFn
-        );
-        instance.clearCanvas();
-        return line;
-    }
+                JSON.stringify({
+                    roomId,
+                    id: newId,
+                    type: "shape",
+                    shape: line.shape,
+                    startX: line.startX,
+                    startY: line.startY,
+                    endX: line.endX,
+                    endY: line.endY
+                }),
+                timer,
+                setTimerFn
+            );
+            instance.clearCanvas();
+            return line;
+        }
 
     else if (selectedElement.shape === tools.Pencil) {
         const pencilPaths = selectedElement as Pencil;

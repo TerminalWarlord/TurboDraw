@@ -28,13 +28,11 @@ const isRect = (instance: DrawCanvas) => (shape: Shape, x: number, y: number): S
 
 const isCircle = (instance: DrawCanvas) => (shape: Shape, x: number, y: number): Shape | null => {
     const circle = shape as Circle;
-    const centerX = circle.centerX;
-    const centerY = circle.centerY;
-    const radius = circle.radius;
+    const { centerX, centerY, radiusX, radiusY } = circle;
     const distanceFromCenter = distance(centerX, x, centerY, y);
 
-    if (distanceFromCenter <= radius) {
-        console.log("sniffing circle", distanceFromCenter, radius);
+    if (distanceFromCenter <= Math.max(radiusX, radiusY)) {
+        console.log("sniffing circle", distanceFromCenter, radiusX, radiusY);
         circle.initialX = x - circle.centerX;
         circle.initialY = y - circle.centerY;
         instance.setSelectedElement(circle);
@@ -46,7 +44,7 @@ const isCircle = (instance: DrawCanvas) => (shape: Shape, x: number, y: number):
 }
 
 
-const isText = (instance: DrawCanvas) => (shape: Shape, x: number, y: number): Shape | null => {
+export const isText = (instance: DrawCanvas) => (shape: Shape, x: number, y: number): Shape | null => {
     const ctx = instance.getCtx();
     const textShape = shape as Text;
     const width = ctx.measureText(textShape.text).width;
@@ -58,7 +56,7 @@ const isText = (instance: DrawCanvas) => (shape: Shape, x: number, y: number): S
     console.log({ x1, x2, y1, y2, x, y });
 
 
-    if (x >= x1 - MARGIN_OF_ERROR*5 && x <= x2 + MARGIN_OF_ERROR*5 && y >= y1 - MARGIN_OF_ERROR*5 && y <= y2 + MARGIN_OF_ERROR*5) {
+    if (x >= x1 - MARGIN_OF_ERROR * 5 && x <= x2 + MARGIN_OF_ERROR * 5 && y >= y1 - MARGIN_OF_ERROR * 5 && y <= y2 + MARGIN_OF_ERROR * 5) {
         instance.setSelectedElement(textShape);
         return textShape;
     }
@@ -78,7 +76,6 @@ const isLine = (instance: DrawCanvas) => (shape: Shape, x: number, y: number): S
     if (Math.abs(distanceOfAB - distanceOfAC - distanceOfBC) < 1) {
         shape.initialX = x - line.startX;
         shape.initialY = y - line.startY;
-        console.log(shape);
         instance.setSelectedElement(shape);
         return line;
     }
