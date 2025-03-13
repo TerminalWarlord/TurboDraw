@@ -1,5 +1,5 @@
 # TurboDraw
-
+![TurboDraw Logo](./docs/turbodraw-logo.png "TurboDraw Logo")
 TurboDraw is a high-performance, real-time collaborative drawing app built with **Turborepo**. Inspired by Excalidraw, it provides a smooth and interactive drawing experience using **Next.js** for the frontend, **Bun** for the backend, and **Prisma** for database management.
 
 ## 🚀 Getting Started
@@ -25,7 +25,8 @@ Clone the repository:
 Create `.env` and add `DATABASE_URL` into `packages/db`
 ```sh
 cd packages/db
-bun prisma migrate dev
+bunx prisma migrate dev
+bunx prisma generate #To generate the client files
 ```
 
 Install the dependencies and run the frontend, backend and ws altogether:
@@ -58,7 +59,6 @@ TurboDraw/
 - **Monorepo:** Turborepo
 
 ## ✨ Features
-✅ Hand-drawn style sketches 🎨  
 ✅ Real-time collaboration 🔄  
 ✅ Multi-device support 📱💻  
 ✅ WebSockets-powered backend ⚡  
