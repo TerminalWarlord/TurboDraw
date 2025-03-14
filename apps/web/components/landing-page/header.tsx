@@ -1,11 +1,10 @@
 "use client";
 
 import Link from "next/link"
-import { Button, buttonVariants } from "../ui/button"
+import { buttonVariants } from "../ui/button"
 import Image from "next/image"
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { signOut} from "next-auth/react";
 import { Session } from "next-auth";
 
 const Header = ({ session }: { session: Session | null }) => {
@@ -48,7 +47,7 @@ const Header = ({ session }: { session: Session | null }) => {
                 <div className="flex space-x-2">
                     {session && session.user ? <>
                         <Link href={'/dashboard'} className={buttonVariants({ variant: "outline" })}>Dashboard</Link>
-
+                        <Link href={'#'} className={buttonVariants({ variant: "default" })} onClick={() => signOut({ callbackUrl: "/auth/login" })}>Logout</Link>
                     </> : <>
                         <Link href={'/auth/login'} className={buttonVariants({ variant: "outline" })}>Sign in</Link>
                         <Link href={'/auth/signup'} className={buttonVariants({ variant: "default" })}>Get Started</Link>
@@ -70,6 +69,7 @@ const Header = ({ session }: { session: Session | null }) => {
                     <div className="flex space-x-2">
                         {session && session.user ? <>
                             <Link href={'/dashboard'} className={buttonVariants({ variant: "outline" })}>Dashboard</Link>
+                            <Link href={'#'} className={buttonVariants({ variant: "default" })} onClick={() => signOut({ callbackUrl: "/auth/login" })}>Logout</Link>
 
                         </> : <>
                             <Link href={'/auth/login'} className={buttonVariants({ variant: "outline" })}>Sign in</Link>

@@ -36,11 +36,11 @@ Bun.serve({
                 else {
                     user.socket.push(ws);
                 }
-                await prismaClient.chat.upsert({
-                    where: { id: parseInt(roomId) },
-                    update: {},
-                    create: { id: parseInt(roomId) }
-                });
+                // await prismaClient.chat.upsert({
+                //     where: { id: parseInt(roomId) },
+                //     update: {},
+                //     create: { id: parseInt(roomId) }
+                // });
 
             }
             else if (parsedData.type === "erase") {

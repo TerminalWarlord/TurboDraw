@@ -1,5 +1,8 @@
 import { Grid3x3 } from "lucide-react"
 import RoomCard from "./room-card"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import { prismaClient } from "db/db"
 
 
 const ROOMS = [
@@ -25,7 +28,47 @@ const ROOMS = [
     }
 ]
 
-const Rooms = () => {
+async function getUserRooms() {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user || !session.user.id) {
+        return;
+    }
+    const rooms = await prismaClient.chat.findMany({
+        where: {
+            userChats: {
+                some: {
+                    userId: parseInt(session.user.id)
+                }
+            }
+        },
+        select: {
+            id: true,
+            chatName: true,
+            userChats: {
+                select: {
+                    user: {
+                        select: {
+                            id: true,
+                            username: true,
+                        }
+                    }
+                }
+            },
+            messages: {
+                orderBy: { sentAt: "desc" },
+                take: 1,
+                select: {
+                    content: true,
+                    sentAt: true
+                }
+            }
+        }
+    })
+}
+
+const Rooms = async () => {
+    const rooms = await getUserRooms();
+    console.log(rooms)
     return (
         <div className="flex flex-col w-full">
             <div className="flex flex-col justify-center items-center w-full px-4  ">

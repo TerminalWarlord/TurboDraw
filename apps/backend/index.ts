@@ -73,6 +73,30 @@ app.post("/signup", async (req, res) => {
 });
 
 
+
+app.post("/create", async (req, res) => {
+    const { chatName } = req.body;
+    try{
+        const room = await prismaClient.chat.create({
+            data: {
+                chatName
+            }
+        })
+        res.json({
+            message: "Room created!",
+            roomId: room.id
+        });
+    }
+    catch(err){
+
+        res.status(403).json({
+            message: "Failed to create a room!"
+        });
+    }
+})
+
+
+
 app.get("/canvas/:roomId", async (req, res) => {
     const roomId = req.params.roomId;
     const messages = await prismaClient.message.findMany({

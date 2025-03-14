@@ -18,7 +18,7 @@ model User {
   email     String     @unique
   username  String     @unique
   password  String?
-  providers Providers @default(CREDENTIALS)
+  providers Providers  @default(CREDENTIALS)
   chat      UserChat[]
 }
 
@@ -33,6 +33,7 @@ model UserChat {
 
 model Chat {
   id        Int        @id @default(autoincrement())
+  chatName  String     @default("Unnamed Chat")
   userChats UserChat[]
   messages  Message[]
 }
