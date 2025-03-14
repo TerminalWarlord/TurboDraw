@@ -71,12 +71,6 @@ To build all apps and packages:
 bun build
 ```
 
-### Remote Caching with Vercel
-To enable Turborepo remote caching:
-```sh
-bun turbo login
-bun turbo link
-```
 
 ## 📜 License
 [MIT License](LICENSE)

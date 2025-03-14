@@ -10,8 +10,8 @@ const Card = ({ icon, title, subtitle }: { icon: ReactNode, title: string, subti
             }}>
                 {icon}
             </div>
-            <h6 className="text-lg font-semibold">{title}</h6>
-            <p className="text-slate-700 text-sm">{subtitle}</p>
+            <h6 className="text-base md:text-md lg:text-lg font-semibold">{title}</h6>
+            <p className="text-slate-700 text-xs md:text-sm">{subtitle}</p>
         </div>
     )
 }

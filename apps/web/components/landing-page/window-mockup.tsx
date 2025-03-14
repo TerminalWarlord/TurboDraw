@@ -16,10 +16,10 @@ const WindowMockup = () => {
 
             </div>
             <div className="flex space-x-2">
-                <div className="w-26 h-26 rounded-md border-2 border-blue-500 rotate-12"></div>
-                <div className="w-26 h-26 rounded-full border-2 border-blue-300"></div>
+                <div className="w-14 h-14 md:w-20 mdh-20 lg:w-26 lg:h-26 rounded-md border-2 border-blue-500 rotate-12"></div>
+                <div className="w-14 h-14 md:w-20 md:h-20 lg:w-26 lg:h-26 rounded-full border-2 border-blue-300"></div>
             </div>
-            <div className="w-72 h-1 bg-amber-300 rotate-6"></div>
+            <div className="w-44 h-0.5 md:w-56 lg:w-72 md:h-1 bg-amber-300 rotate-6"></div>
         </div>
     )
 }
