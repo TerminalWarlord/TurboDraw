@@ -27,7 +27,7 @@ app.post("/signin", async (req, res) => {
 
     }
 
-    const hashedPassword = await bcrypt.compare(password, user.password);
+    const hashedPassword = await bcrypt.compare(password, user.password || "");
     if (!hashedPassword) {
         res.status(403).json({
             message: "Incorrect password!"
@@ -48,7 +48,6 @@ app.post("/signin", async (req, res) => {
 
 app.post("/signup", async (req, res) => {
     const User = z.object({
-        name: z.string(),
         email: z.string().email(),
         password: z.string().min(4)
     });
@@ -63,8 +62,8 @@ app.post("/signup", async (req, res) => {
     const user = await prismaClient.user.create({
         data: {
             email: parsedData.data.email,
+            username: parsedData.data.email,
             password: await bcrypt.hash(parsedData.data.password, 5),
-            name: parsedData.data.name
         }
     });
 

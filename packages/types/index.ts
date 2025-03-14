@@ -69,3 +69,9 @@ export interface PencilPath {
     endX: number;
     endY: number;
 }
+
+
+export enum Providers{
+    google = "google",
+    credentials = "crendentials",
+}

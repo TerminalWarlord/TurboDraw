@@ -23,7 +23,7 @@ const Hero = () => {
                 <h3>Create, share, and collaborate on digital whiteboards in real-time. TurboDraw connects your team's ideas with powerful drawing tools and instant synchronization.</h3>
             </div>
             <div className='my-8' style={SLIDEDOWN}>
-                <Link href={"/signin"} className='md:text-lg px-6 py-3 bg-black text-white flex justify-center items-center rounded-2xl'>
+                <Link href={"/auth/signup"} className='md:text-lg px-6 py-3 bg-black text-white flex justify-center items-center rounded-2xl'>
                     <span>Start Drawing</span>
                     <ArrowRight />
                 </Link>

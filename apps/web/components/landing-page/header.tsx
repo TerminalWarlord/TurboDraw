@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link"
-import { Button } from "../ui/button"
+import { Button, buttonVariants } from "../ui/button"
 import Image from "next/image"
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { Session } from "next-auth";
 
-const Header = () => {
+const Header = ({ session }: { session: Session | null }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
     const [hash, setHash] = useState("");
 
@@ -44,8 +46,14 @@ const Header = () => {
                     </ul>
                 </div>
                 <div className="flex space-x-2">
-                    <Button variant={'outline'}>Sign in</Button>
-                    <Button>Get Started</Button>
+                    {session && session.user ? <>
+                        <Link href={'/dashboard'} className={buttonVariants({ variant: "outline" })}>Dashboard</Link>
+
+                    </> : <>
+                        <Link href={'/auth/login'} className={buttonVariants({ variant: "outline" })}>Sign in</Link>
+                        <Link href={'/auth/signup'} className={buttonVariants({ variant: "default" })}>Get Started</Link>
+                    </>}
+
                 </div>
 
             </div>
@@ -60,8 +68,13 @@ const Header = () => {
                         <li><Link href={"/#how-it-works"} className={`hover:border-b-3 hover:pb-1 transition-all ease-in duration-200 hover:border-slate-600 ${hash === "how-it-works" ? "border-slate-600 pb-1 border-b-3" : ""}`}>How it works</Link></li>
                     </ul>
                     <div className="flex space-x-2">
-                        <Button variant={'outline'}>Sign in</Button>
-                        <Button>Get Started</Button>
+                        {session && session.user ? <>
+                            <Link href={'/dashboard'} className={buttonVariants({ variant: "outline" })}>Dashboard</Link>
+
+                        </> : <>
+                            <Link href={'/auth/login'} className={buttonVariants({ variant: "outline" })}>Sign in</Link>
+                            <Link href={'/auth/signup'} className={buttonVariants({ variant: "default" })}>Get Started</Link>
+                        </>}
                     </div>
                 </div>
 
